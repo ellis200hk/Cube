@@ -1,14 +1,13 @@
 :root {
-  --bg: #090d1a;
-  --bg-soft: #121a2f;
-  --card: #151f36;
-  --text: #eaf0ff;
-  --muted: #9da9c9;
+  --bg: #070b16;
+  --card: rgba(19, 28, 50, 0.82);
+  --text: #ebf2ff;
+  --muted: #9eaad0;
   --accent: #5ac8fa;
-  --accent-2: #8b80ff;
+  --accent-2: #8a7bff;
   --success: #66d88f;
   --danger: #ff6b7a;
-  --border: #273759;
+  --border: rgba(132, 162, 235, 0.24);
 }
 
 * {
@@ -17,14 +16,18 @@
 
 body {
   margin: 0;
+  min-height: 100vh;
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: radial-gradient(circle at top right, #182a4f, var(--bg) 45%);
-  color: var(--text);
   line-height: 1.45;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 12% 12%, rgba(120, 103, 255, 0.22), transparent 35%),
+    radial-gradient(circle at 88% 0%, rgba(90, 200, 250, 0.2), transparent 34%),
+    linear-gradient(165deg, #091022 0%, #070b16 55%, #0b1226 100%);
 }
 
 .app-shell {
-  max-width: 1100px;
+  max-width: 1140px;
   margin: 0 auto;
   padding: 1.25rem 1rem 2rem;
 }
@@ -32,17 +35,25 @@ body {
 .hero {
   display: grid;
   gap: 1rem;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1.2fr 1fr;
   align-items: center;
-  background: linear-gradient(145deg, #18284a, #0f1629);
+  background: linear-gradient(155deg, rgba(23, 40, 74, 0.85), rgba(15, 22, 41, 0.85));
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 1.25rem;
+  box-shadow:
+    0 16px 42px rgba(3, 8, 22, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+}
+
+.hero-copy {
+  max-width: 540px;
 }
 
 .hero h1 {
   margin: 0.2rem 0;
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
 }
 
 .hero p {
@@ -50,35 +61,99 @@ body {
 }
 
 .eyebrow {
+  margin: 0;
+  color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--accent);
-  font-size: 0.75rem;
-  margin: 0;
+  font-size: 0.74rem;
 }
 
 .hero-cube {
-  background: rgba(8, 13, 24, 0.65);
+  justify-self: center;
+  width: min(360px, 100%);
+  padding: 0.9rem;
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 0.75rem;
+  border-radius: 14px;
+  background: linear-gradient(170deg, rgba(12, 20, 38, 0.9), rgba(10, 16, 30, 0.8));
 }
 
-.cube-face {
+.cube-stage {
   display: grid;
-  grid-template-columns: repeat(3, 22px);
-  gap: 4px;
+  place-items: center;
+  perspective: 800px;
+  min-height: 220px;
+  border-radius: 12px;
+  background: radial-gradient(circle at center, rgba(72, 97, 160, 0.22), rgba(7, 11, 22, 0) 65%);
+}
+
+.cube-3d {
+  position: relative;
+  width: 126px;
+  height: 126px;
+  transform-style: preserve-3d;
+  transform: rotateX(-24deg) rotateY(38deg);
+  transition: transform 320ms ease;
+}
+
+.cube-3d.is-spin {
+  animation: cube-spin 8s linear infinite;
+}
+
+@keyframes cube-spin {
+  from {
+    transform: rotateX(-24deg) rotateY(38deg);
+  }
+  to {
+    transform: rotateX(-24deg) rotateY(398deg);
+  }
+}
+
+.face {
+  position: absolute;
+  width: 126px;
+  height: 126px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  padding: 7px;
+  border-radius: 10px;
+  background: #0f1b33;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+}
+
+.face-front {
+  transform: translateZ(63px);
+}
+
+.face-back {
+  transform: rotateY(180deg) translateZ(63px);
+}
+
+.face-right {
+  transform: rotateY(90deg) translateZ(63px);
+}
+
+.face-left {
+  transform: rotateY(-90deg) translateZ(63px);
+}
+
+.face-top {
+  transform: rotateX(90deg) translateZ(63px);
+}
+
+.face-bottom {
+  transform: rotateX(-90deg) translateZ(63px);
 }
 
 .sq {
-  width: 22px;
-  height: 22px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .sq-w {
-  background: #fff;
+  background: #ffffff;
 }
 
 .sq-g {
@@ -101,6 +176,13 @@ body {
   background: #ffd639;
 }
 
+.cube-controls {
+  margin-top: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
 .mode-nav {
   display: flex;
   flex-wrap: wrap;
@@ -110,11 +192,16 @@ body {
 
 .mode-btn {
   border: 1px solid var(--border);
-  background: #111a30;
+  background: rgba(17, 26, 48, 0.75);
   color: var(--text);
-  padding: 0.6rem 0.85rem;
-  border-radius: 10px;
+  padding: 0.64rem 0.9rem;
+  border-radius: 12px;
   cursor: pointer;
+  transition: transform 120ms ease, background 120ms ease;
+}
+
+.mode-btn:hover {
+  transform: translateY(-1px);
 }
 
 .mode-btn.is-active {
@@ -137,10 +224,19 @@ body {
 }
 
 .card {
-  background: linear-gradient(160deg, #17233f, var(--card));
+  background: linear-gradient(170deg, var(--card), rgba(16, 25, 45, 0.78));
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1rem;
+  box-shadow:
+    0 10px 28px rgba(4, 9, 24, 0.46),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(132, 162, 235, 0.4);
 }
 
 .card h2 {
@@ -181,11 +277,12 @@ body {
 
 .move-token {
   display: inline-block;
-  font-weight: 600;
-  background: #25375f;
-  border: 1px solid #354d7f;
+  font-weight: 700;
+  font-size: 0.93rem;
+  background: linear-gradient(145deg, #25375f, #1f2f51);
+  border: 1px solid #3d568b;
   border-radius: 8px;
-  padding: 0.25rem 0.45rem;
+  padding: 0.27rem 0.48rem;
   min-width: 2rem;
   text-align: center;
 }
@@ -201,13 +298,13 @@ body {
   border: 1px solid transparent;
   border-radius: 10px;
   padding: 0.55rem 0.8rem;
-  font-weight: 600;
+  font-weight: 650;
   background: linear-gradient(145deg, #4f8dff, #6a62ff);
   color: white;
 }
 
 .btn:hover {
-  filter: brightness(1.05);
+  filter: brightness(1.06);
 }
 
 .btn-soft {
@@ -261,6 +358,9 @@ body {
   margin: 0.7rem 0 0.8rem;
   letter-spacing: 0.04em;
   text-align: center;
+  text-shadow:
+    0 0 14px rgba(90, 200, 250, 0.35),
+    0 0 26px rgba(138, 123, 255, 0.23);
 }
 
 .stats-grid {
@@ -364,6 +464,10 @@ td {
   }
 
   .panel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cube-controls {
     grid-template-columns: 1fr;
   }
 }

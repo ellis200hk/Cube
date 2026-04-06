@@ -11,6 +11,60 @@ modeButtons.forEach((button) => {
   });
 });
 
+const cube3d = document.getElementById("cube-3d");
+const rotateLeftBtn = document.getElementById("rotate-left-btn");
+const rotateRightBtn = document.getElementById("rotate-right-btn");
+const autoSpinBtn = document.getElementById("auto-spin-btn");
+
+let cubeY = -30;
+let cubeX = -20;
+let autoSpin = false;
+let cubeSpinTimer = null;
+
+function renderCubeRotation() {
+  if (!cube3d) return;
+  cube3d.style.transform = `rotateX(${cubeX}deg) rotateY(${cubeY}deg)`;
+}
+
+function startAutoSpin() {
+  if (cubeSpinTimer) return;
+  cubeSpinTimer = setInterval(() => {
+    cubeY += 1.5;
+    renderCubeRotation();
+  }, 16);
+}
+
+function stopAutoSpin() {
+  if (!cubeSpinTimer) return;
+  clearInterval(cubeSpinTimer);
+  cubeSpinTimer = null;
+}
+
+if (rotateLeftBtn) {
+  rotateLeftBtn.addEventListener("click", () => {
+    cubeY -= 18;
+    renderCubeRotation();
+  });
+}
+
+if (rotateRightBtn) {
+  rotateRightBtn.addEventListener("click", () => {
+    cubeY += 18;
+    renderCubeRotation();
+  });
+}
+
+if (autoSpinBtn) {
+  autoSpinBtn.addEventListener("click", () => {
+    autoSpin = !autoSpin;
+    autoSpinBtn.textContent = autoSpin ? "Stop Spin" : "Auto Spin";
+    autoSpinBtn.classList.toggle("is-on", autoSpin);
+
+    if (autoSpin) startAutoSpin();
+    else stopAutoSpin();
+  });
+}
+
 const teachingSteps = [
   {
     title: "Cross - Build a white cross",
@@ -263,3 +317,4 @@ lessonGroups.forEach((group) => {
 scrambleText.textContent = generateScramble();
 renderTeachingStep();
 renderTimer();
+renderCubeRotation();
