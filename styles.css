@@ -471,3 +471,107 @@ td {
     grid-template-columns: 1fr;
   }
 }
+
+/* User-requested intentionally terrible visual theme override */
+body {
+  background: repeating-conic-gradient(
+    from 0deg,
+    #ff00ea 0deg 12deg,
+    #00ffd9 12deg 24deg,
+    #ffe600 24deg 36deg
+  ) !important;
+  color: #000 !important;
+  font-family: "Comic Sans MS", "Papyrus", cursive !important;
+}
+
+.app-shell {
+  max-width: 1500px !important;
+  padding: 0.2rem !important;
+}
+
+.hero,
+.card,
+.mode-btn,
+.btn,
+.scramble-box,
+.step-highlight,
+.drill-box,
+.tip-box,
+.stat {
+  background: linear-gradient(90deg, #00ff2f, #ff0033, #3300ff) !important;
+  color: #12000c !important;
+  border: 4px dotted #000 !important;
+  border-radius: 0 !important;
+  box-shadow: 11px 11px 0 #000 !important;
+  transform: rotate(-0.7deg);
+}
+
+.hero-copy p,
+.muted,
+.label {
+  color: #130015 !important;
+  font-weight: 800 !important;
+}
+
+.mode-nav {
+  gap: 0.1rem !important;
+}
+
+.mode-btn {
+  padding: 0.9rem 0.3rem !important;
+  font-size: 0.82rem !important;
+}
+
+.mode-btn.is-active {
+  outline: 5px solid #fff !important;
+}
+
+.panel-grid {
+  gap: 1.7rem !important;
+}
+
+.btn {
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+}
+
+.btn:hover,
+.mode-btn:hover {
+  transform: rotate(2deg) scale(1.06) !important;
+  filter: hue-rotate(120deg) saturate(2.2) contrast(1.5) !important;
+}
+
+.cube-stage {
+  border-radius: 2px !important;
+  border: 6px dashed #1b0014 !important;
+  background: #fff200 !important;
+}
+
+.face {
+  border-radius: 0 !important;
+  border-width: 3px !important;
+}
+
+.sq {
+  border-radius: 0 !important;
+  border: 2px solid #000 !important;
+}
+
+.timer-display {
+  font-size: clamp(2.7rem, 11vw, 7rem) !important;
+  color: #ff0000 !important;
+  text-shadow: 2px 2px #fff, -2px -2px #00f !important;
+  letter-spacing: 0.14em !important;
+}
+
+table,
+th,
+td {
+  border: 2px solid #111 !important;
+  background: #ffea00 !important;
+  color: #17000e !important;
+}
+
+.practice-plan li {
+  margin: 0.5rem 0 !important;
+}
