@@ -15,11 +15,92 @@ const cube3d = document.getElementById("cube-3d");
 const rotateLeftBtn = document.getElementById("rotate-left-btn");
 const rotateRightBtn = document.getElementById("rotate-right-btn");
 const autoSpinBtn = document.getElementById("auto-spin-btn");
+const supersonicSpinBtn = document.getElementById("supersonic-spin-btn");
 
 let cubeY = -30;
 let cubeX = -20;
 let autoSpin = false;
+let supersonicSpin = false;
 let cubeSpinTimer = null;
+let currentSpinStep = 1.5;
+let currentSpinIntervalMs = 16;
+let audioContext = null;
+
+function getAudioContext() {
+  if (!audioContext) {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return null;
+    audioContext = new AudioCtx();
+  }
+  if (audioContext.state === "suspended") {
+    audioContext.resume();
+  }
+  return audioContext;
+}
+
+function playWeirdSound(type = "blip") {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const lfo = ctx.createOscillator();
+  const lfoGain = ctx.createGain();
+
+  osc.connect(gain);
+  lfo.connect(lfoGain);
+  lfoGain.connect(osc.frequency);
+  gain.connect(ctx.destination);
+
+  gain.gain.setValueAtTime(0.0001, now);
+
+  if (type === "fahhh") {
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.exponentialRampToValueAtTime(650, now + 0.35);
+    osc.frequency.exponentialRampToValueAtTime(220, now + 0.65);
+
+    lfo.type = "triangle";
+    lfo.frequency.setValueAtTime(6, now);
+    lfoGain.gain.setValueAtTime(25, now);
+
+    gain.gain.exponentialRampToValueAtTime(0.28, now + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.72);
+
+    osc.start(now);
+    lfo.start(now);
+    osc.stop(now + 0.72);
+    lfo.stop(now + 0.72);
+    return;
+  }
+
+  if (type === "spin") {
+    osc.type = "square";
+    osc.frequency.setValueAtTime(320, now);
+    osc.frequency.exponentialRampToValueAtTime(920, now + 0.14);
+    lfo.type = "sine";
+    lfo.frequency.setValueAtTime(10, now);
+    lfoGain.gain.setValueAtTime(10, now);
+
+    gain.gain.exponentialRampToValueAtTime(0.12, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+
+    osc.start(now);
+    lfo.start(now);
+    osc.stop(now + 0.18);
+    lfo.stop(now + 0.18);
+    return;
+  }
+
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(220, now);
+  osc.frequency.exponentialRampToValueAtTime(440, now + 0.08);
+  gain.gain.exponentialRampToValueAtTime(0.08, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+  osc.start(now);
+  osc.stop(now + 0.14);
+}
 
 function renderCubeRotation() {
   if (!cube3d) return;
@@ -29,9 +110,9 @@ function renderCubeRotation() {
 function startAutoSpin() {
   if (cubeSpinTimer) return;
   cubeSpinTimer = setInterval(() => {
-    cubeY += 1.5;
+    cubeY += currentSpinStep;
     renderCubeRotation();
-  }, 16);
+  }, currentSpinIntervalMs);
 }
 
 function stopAutoSpin() {
@@ -44,6 +125,7 @@ if (rotateLeftBtn) {
   rotateLeftBtn.addEventListener("click", () => {
     cubeY -= 18;
     renderCubeRotation();
+    playWeirdSound("blip");
   });
 }
 
@@ -51,17 +133,50 @@ if (rotateRightBtn) {
   rotateRightBtn.addEventListener("click", () => {
     cubeY += 18;
     renderCubeRotation();
+    playWeirdSound("blip");
   });
 }
 
 if (autoSpinBtn) {
   autoSpinBtn.addEventListener("click", () => {
+    playWeirdSound("spin");
+    supersonicSpin = false;
+    currentSpinStep = 1.5;
+    currentSpinIntervalMs = 16;
+
+    if (supersonicSpinBtn) {
+      supersonicSpinBtn.textContent = "Supersonic Spin";
+      supersonicSpinBtn.classList.remove("is-on");
+    }
+
     autoSpin = !autoSpin;
     autoSpinBtn.textContent = autoSpin ? "Stop Spin" : "Auto Spin";
     autoSpinBtn.classList.toggle("is-on", autoSpin);
 
+    stopAutoSpin();
     if (autoSpin) startAutoSpin();
-    else stopAutoSpin();
+  });
+}
+
+if (supersonicSpinBtn) {
+  supersonicSpinBtn.addEventListener("click", () => {
+    playWeirdSound("fahhh");
+    supersonicSpin = !supersonicSpin;
+    autoSpin = false;
+
+    autoSpinBtn.textContent = "Auto Spin";
+    autoSpinBtn.classList.remove("is-on");
+
+    currentSpinStep = supersonicSpin ? 20 : 1.5;
+    currentSpinIntervalMs = supersonicSpin ? 8 : 16;
+
+    supersonicSpinBtn.textContent = supersonicSpin
+      ? "Stop Supersonic"
+      : "Supersonic Spin";
+    supersonicSpinBtn.classList.toggle("is-on", supersonicSpin);
+
+    stopAutoSpin();
+    if (supersonicSpin) startAutoSpin();
   });
 }
 
@@ -110,11 +225,13 @@ function renderTeachingStep() {
 document.getElementById("next-step-btn").addEventListener("click", () => {
   stepIndex = (stepIndex + 1) % teachingSteps.length;
   renderTeachingStep();
+  playWeirdSound("blip");
 });
 
 document.getElementById("prev-step-btn").addEventListener("click", () => {
   stepIndex = (stepIndex - 1 + teachingSteps.length) % teachingSteps.length;
   renderTeachingStep();
+  playWeirdSound("blip");
 });
 
 const coachReplies = [
@@ -141,11 +258,13 @@ document.getElementById("coach-tip-btn").addEventListener("click", () => {
   bubble.textContent = reply;
   coachThread.appendChild(bubble);
   coachThread.scrollTop = coachThread.scrollHeight;
+  playWeirdSound("fahhh");
 });
 
 document.getElementById("drill-btn").addEventListener("click", () => {
   const drill = drillIdeas[Math.floor(Math.random() * drillIdeas.length)];
   drillBox.textContent = drill;
+  playWeirdSound("blip");
 });
 
 const moves = ["R", "L", "U", "D", "F", "B"];
@@ -172,6 +291,7 @@ function generateScramble(length = 20) {
 const scrambleText = document.getElementById("scramble-text");
 document.getElementById("new-scramble-btn").addEventListener("click", () => {
   scrambleText.textContent = generateScramble();
+  playWeirdSound("blip");
 });
 
 const timerDisplay = document.getElementById("timer-display");
@@ -259,6 +379,7 @@ startBtn.addEventListener("click", () => {
     elapsed = Date.now() - startTime;
     renderTimer();
   }, 10);
+  playWeirdSound("spin");
 });
 
 stopBtn.addEventListener("click", () => {
@@ -266,6 +387,7 @@ stopBtn.addEventListener("click", () => {
   clearInterval(intervalId);
   intervalId = null;
   saveSolve(elapsed, "OK");
+  playWeirdSound("fahhh");
 });
 
 resetBtn.addEventListener("click", () => {
@@ -276,6 +398,7 @@ resetBtn.addEventListener("click", () => {
   elapsed = 0;
   latestSolveIndex = -1;
   renderTimer();
+  playWeirdSound("blip");
 });
 
 plusTwoBtn.addEventListener("click", () => {
@@ -286,6 +409,7 @@ plusTwoBtn.addEventListener("click", () => {
   solve.status = "+2";
   renderHistory();
   updateStats();
+  playWeirdSound("spin");
 });
 
 dnfBtn.addEventListener("click", () => {
@@ -293,6 +417,7 @@ dnfBtn.addEventListener("click", () => {
   solves[latestSolveIndex].status = "DNF";
   renderHistory();
   updateStats();
+  playWeirdSound("fahhh");
 });
 
 const lessonGroups = document.querySelectorAll(".lesson-list");
@@ -309,7 +434,10 @@ function updateModuleProgress(module) {
 lessonGroups.forEach((group) => {
   const module = group.dataset.module;
   group.querySelectorAll("input[data-lesson]").forEach((checkbox) => {
-    checkbox.addEventListener("change", () => updateModuleProgress(module));
+    checkbox.addEventListener("change", () => {
+      updateModuleProgress(module);
+      playWeirdSound("blip");
+    });
   });
   updateModuleProgress(module);
 });

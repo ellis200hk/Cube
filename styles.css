@@ -541,6 +541,14 @@ body {
   filter: hue-rotate(120deg) saturate(2.2) contrast(1.5) !important;
 }
 
+#sound-toggle-btn.is-on,
+#supersonic-btn.is-on {
+  background: #ff00d4 !important;
+  color: #fff !important;
+  border-color: #000 !important;
+  box-shadow: 0 0 0 4px #000, 0 0 24px #ff00d4 !important;
+}
+
 .cube-stage {
   border-radius: 2px !important;
   border: 6px dashed #1b0014 !important;
