@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CubeCoach | Rubik's Cube Trainer</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Rubik's Cube Trainer</p>
+          <h1>CubeCoach</h1>
+          <p>
+            Learn with AI guidance, train with competition-ready timing, and
+            complete a short course to improve your solve times.
+          </p>
+        </div>
+        <div class="hero-cube" aria-hidden="true">
+          <div class="cube-face">
+            <span class="sq sq-w"></span><span class="sq sq-g"></span
+            ><span class="sq sq-o"></span> <span class="sq sq-r"></span
+            ><span class="sq sq-b"></span><span class="sq sq-y"></span>
+            <span class="sq sq-g"></span><span class="sq sq-w"></span
+            ><span class="sq sq-r"></span>
+          </div>
+        </div>
+      </header>
+
+      <nav class="mode-nav" aria-label="App modes">
+        <button class="mode-btn is-active" data-target="teaching-panel">
+          Teaching Mode
+        </button>
+        <button class="mode-btn" data-target="competition-panel">
+          Competition Timer
+        </button>
+        <button class="mode-btn" data-target="course-panel">Short Course</button>
+      </nav>
+
+      <main>
+        <section id="teaching-panel" class="panel is-active">
+          <div class="panel-grid">
+            <article class="card">
+              <h2>AI Teaching Mode</h2>
+              <p class="muted">
+                Follow guided CFOP steps with move hints and coaching tips.
+              </p>
+              <div class="step-highlight">
+                <p class="label">Current Step</p>
+                <h3 id="step-title">Cross - Build a white cross</h3>
+                <p id="step-body">
+                  Start by solving the white edge pieces around the center.
+                </p>
+              </div>
+              <div class="move-strip" id="move-strip"></div>
+              <div class="button-row">
+                <button id="prev-step-btn" class="btn btn-soft">Previous</button>
+                <button id="next-step-btn" class="btn">Next Step</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <h2>AI Coach</h2>
+              <p class="muted">
+                Ask for simpler explanation, finger tricks, or common mistakes.
+              </p>
+              <div id="coach-thread" class="coach-thread" aria-live="polite">
+                <div class="chat bubble user">
+                  How do I avoid breaking the cross when inserting corners?
+                </div>
+                <div class="chat bubble ai">
+                  Keep the solved cross on bottom. Use short triggers (R U R')
+                  and rotate only when your next pair is blocked.
+                </div>
+              </div>
+              <div class="button-row">
+                <button id="coach-tip-btn" class="btn">Ask AI Coach</button>
+                <button id="drill-btn" class="btn btn-soft">
+                  Generate Drill
+                </button>
+              </div>
+              <div id="drill-box" class="drill-box">
+                Drill: Solve first-layer corners using only right triggers for 5
+                minutes.
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="competition-panel" class="panel">
+          <div class="panel-grid">
+            <article class="card">
+              <h2>Competition Timer</h2>
+              <p class="muted">
+                WCA-style timer with scramble generation and session tracking.
+              </p>
+              <div class="scramble-box">
+                <p class="label">Scramble</p>
+                <p id="scramble-text" class="scramble-text"></p>
+                <button id="new-scramble-btn" class="btn btn-soft">
+                  New Scramble
+                </button>
+              </div>
+              <div id="timer-display" class="timer-display">00:00.00</div>
+              <div class="button-row">
+                <button id="start-btn" class="btn">Start</button>
+                <button id="stop-btn" class="btn btn-soft">Stop</button>
+                <button id="reset-btn" class="btn btn-soft">Reset</button>
+              </div>
+              <div class="button-row">
+                <button id="plus-two-btn" class="btn btn-soft">+2 Penalty</button>
+                <button id="dnf-btn" class="btn btn-soft">DNF</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <h2>Session Stats</h2>
+              <div class="stats-grid">
+                <div class="stat">
+                  <p>Best</p>
+                  <strong id="best-stat">--</strong>
+                </div>
+                <div class="stat">
+                  <p>Average</p>
+                  <strong id="avg-stat">--</strong>
+                </div>
+                <div class="stat">
+                  <p>Solves</p>
+                  <strong id="count-stat">0</strong>
+                </div>
+              </div>
+              <div class="history-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Time</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="history-body"></tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="course-panel" class="panel">
+          <div class="panel-grid">
+            <article class="card">
+              <h2>Short Course</h2>
+              <p class="muted">
+                Complete mini lessons and quickly build practical speedcubing
+                habits.
+              </p>
+
+              <div class="course-module">
+                <div class="module-head">
+                  <h3>Module 1: Cube Basics</h3>
+                  <span id="module-1-progress">0%</span>
+                </div>
+                <div class="progress">
+                  <div id="module-1-bar" class="progress-fill"></div>
+                </div>
+                <ul class="lesson-list" data-module="1">
+                  <li>
+                    <label
+                      ><input type="checkbox" data-lesson /> Notation (R, U, L,
+                      F, D, B)</label
+                    >
+                  </li>
+                  <li>
+                    <label
+                      ><input type="checkbox" data-lesson /> White Cross
+                      Strategy</label
+                    >
+                  </li>
+                  <li>
+                    <label
+                      ><input type="checkbox" data-lesson /> First Layer Corner
+                      Inserts</label
+                    >
+                  </li>
+                </ul>
+              </div>
+
+              <div class="course-module">
+                <div class="module-head">
+                  <h3>Module 2: Speed Foundations</h3>
+                  <span id="module-2-progress">0%</span>
+                </div>
+                <div class="progress">
+                  <div id="module-2-bar" class="progress-fill"></div>
+                </div>
+                <ul class="lesson-list" data-module="2">
+                  <li>
+                    <label
+                      ><input type="checkbox" data-lesson /> Efficient F2L
+                      Pairing</label
+                    >
+                  </li>
+                  <li>
+                    <label
+                      ><input type="checkbox" data-lesson /> Beginner OLL and
+                      PLL</label
+                    >
+                  </li>
+                  <li>
+                    <label
+                      ><input type="checkbox" data-lesson /> Turning Accuracy
+                      Drill</label
+                    >
+                  </li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="card">
+              <h2>Today’s Practice Plan</h2>
+              <ol class="practice-plan">
+                <li>Warm-up: 5 untimed solves focusing on smooth turning.</li>
+                <li>Cross + first pair drill for 10 minutes.</li>
+                <li>10 full timed solves using generated scrambles.</li>
+                <li>Review one solve and note 2 optimization ideas.</li>
+              </ol>
+              <div class="tip-box">
+                Tip: Keep your eyes ahead of your hands. Predict your next F2L
+                pair while finishing the current one.
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
